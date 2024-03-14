@@ -9,6 +9,7 @@ function App() {
   const logUserIn = () => {
     fetch("http://localhost:8080/login", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,8 +27,23 @@ function App() {
       .catch((err) => console.error(err));
   };
 
+  const logUserOut = () => {
+    fetch("http://localhost:8080/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((data) => data.json())
+      .then((json) => {
+        console.log(json.message);
+        setLoggedIn(false);
+      })
+      .catch((err) => console.error(err));
+  };
+
   const isUserLoggedIn = () => {
-    fetch("http://localhost:8080/is_logged_in")
+    fetch("http://localhost:8080/is_logged_in", {
+      credentials: "include",
+    })
       .then((data) => data.json())
       .then((json) => {
         if (json.logged_in) {
@@ -50,10 +66,17 @@ function App() {
         </p>
         {!loggedIn && (
           <button className="App-link" onClick={logUserIn}>
-            log user in!
+            log in
           </button>
         )}
-        {loggedIn && <p>Welcome {username}!</p>}
+        {loggedIn && (
+          <>
+            <p>Welcome {username}!</p>
+            <button className="App-link" onClick={logUserOut}>
+              log out
+            </button>
+          </>
+        )}
       </header>
     </div>
   );
